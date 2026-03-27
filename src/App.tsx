@@ -26,7 +26,8 @@ const [query, setQuery] = useState("book,nature,animals,people");
 
   initialPageParam: 1,
 
- getNextPageParam: (_, pages) => {
+getNextPageParam: (lastPage, pages) => {
+  if (lastPage.total_pages === pages.length) return undefined;
   return pages.length + 1;
 },
 
