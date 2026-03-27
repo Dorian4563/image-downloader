@@ -6,40 +6,38 @@ import ImageGrid from "./components/ImageGrid";
 import Modal from "./components/Modal";
 
 export default function App() {
-const [query, setQuery] = useState("book,nature,animals,people");
+  const [query, setQuery] = useState("book,nature,animals,people");
   const [selectedImage, setSelectedImage] = useState<any>(null);
 
-  <h2 style={{ marginBottom: "20px" }}>
-  Showing: {query || "Trending"}
-</h2>
-
   const {
-  data,
-  fetchNextPage,
-  hasNextPage,
-  isLoading,
-  isError,
-} = useInfiniteQuery({
-  queryKey: ["images", query],
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isLoading,
+    isError,
+  } = useInfiniteQuery({
+    queryKey: ["images", query],
+    queryFn: ({ pageParam }) => searchImages(query, pageParam),
+    initialPageParam: 1,
 
-  queryFn: ({ pageParam }) => searchImages(query, pageParam),
+    // ✅ FIXED
+    getNextPageParam: (_, pages) => {
+      return pages.length + 1;
+    },
 
-  initialPageParam: 1,
+    enabled: true,
+  });
 
-getNextPageParam: (lastPage, pages) => {
-  if (lastPage.total_pages === pages.length) return undefined;
-  return pages.length + 1;
-},
-
-  enabled: true
-});
-
-const images = data?.pages.flatMap((page) =>
-  query ? page.results : page
-) || [];
+  const images =
+    data?.pages.flatMap((page) => (query ? page.results : page)) || [];
 
   return (
     <div className="container">
+      {/* ✅ FIXED */}
+      <h2 style={{ marginBottom: "20px" }}>
+        Showing: {query || "Trending"}
+      </h2>
+
       <SearchBar onSearch={setQuery} />
 
       {isLoading && <p>Loading...</p>}
@@ -53,7 +51,10 @@ const images = data?.pages.flatMap((page) =>
         </button>
       )}
 
-      <Modal image={selectedImage} onClose={() => setSelectedImage(null)} />
+      <Modal
+        image={selectedImage}
+        onClose={() => setSelectedImage(null)}
+      />
     </div>
   );
 }
