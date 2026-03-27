@@ -6,7 +6,7 @@ import ImageGrid from "./components/ImageGrid";
 import Modal from "./components/Modal";
 
 export default function App() {
-const [query, setQuery] = useState("book");
+const [query, setQuery] = useState("book,nature,animals,people");
   const [selectedImage, setSelectedImage] = useState<any>(null);
 
   <h2 style={{ marginBottom: "20px" }}>
@@ -26,7 +26,7 @@ const [query, setQuery] = useState("book");
 
   initialPageParam: 1,
 
-  getNextPageParam: (lastPage, pages) => {
+  getNextPageParam: (pages) => {
     return pages.length + 1;
   },
 
